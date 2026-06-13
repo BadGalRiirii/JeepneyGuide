@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full bleed background for maskable icon (safe zone is inner 80%) -->
+  <rect width="512" height="512" fill="#060d1a"/>
+  <!-- Jeepney body -->
+  <rect x="100" y="190" width="312" height="170" rx="24" fill="#f59e0b"/>
+  <!-- Roof -->
+  <rect x="82" y="162" width="348" height="46" rx="18" fill="#d97706"/>
+  <!-- Windshield -->
+  <rect x="126" y="198" width="120" height="80" rx="10" fill="#bfdbfe" opacity="0.9"/>
+  <!-- Side windows -->
+  <rect x="262" y="204" width="52" height="48" rx="7" fill="#bfdbfe" opacity="0.8"/>
+  <rect x="326" y="204" width="52" height="48" rx="7" fill="#bfdbfe" opacity="0.8"/>
+  <!-- Stripe -->
+  <rect x="100" y="296" width="312" height="10" fill="#b45309"/>
+  <!-- Wheels -->
+  <circle cx="172" cy="378" r="38" fill="#1e293b"/>
+  <circle cx="172" cy="378" r="22" fill="#374151"/>
+  <circle cx="172" cy="378" r="10" fill="#f59e0b"/>
+  <circle cx="340" cy="378" r="38" fill="#1e293b"/>
+  <circle cx="340" cy="378" r="22" fill="#374151"/>
+  <circle cx="340" cy="378" r="10" fill="#f59e0b"/>
+  <!-- Headlight -->
+  <rect x="106" y="316" width="32" height="20" rx="5" fill="#fef3c7"/>
+  <!-- Text -->
+  <text x="189" y="260" font-family="Arial Black, sans-serif" font-weight="900" font-size="46" fill="#1e3a5f" text-anchor="middle">CDO</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="#060d1a"/>
+  <!-- Jeepney body -->
+  <rect x="80" y="180" width="352" height="190" rx="28" fill="#f59e0b"/>
+  <!-- Roof / overhang -->
+  <rect x="60" y="150" width="392" height="50" rx="20" fill="#d97706"/>
+  <!-- Windshield -->
+  <rect x="110" y="188" width="140" height="90" rx="12" fill="#bfdbfe" opacity="0.9"/>
+  <!-- Side windows -->
+  <rect x="270" y="195" width="60" height="55" rx="8" fill="#bfdbfe" opacity="0.8"/>
+  <rect x="342" y="195" width="60" height="55" rx="8" fill="#bfdbfe" opacity="0.8"/>
+  <!-- Door stripe -->
+  <rect x="80" y="290" width="352" height="12" fill="#b45309"/>
+  <!-- Front grille detail -->
+  <rect x="95" y="310" width="60" height="35" rx="8" fill="#d97706"/>
+  <!-- Wheels -->
+  <circle cx="160" cy="385" r="42" fill="#1e293b"/>
+  <circle cx="160" cy="385" r="26" fill="#374151"/>
+  <circle cx="160" cy="385" r="12" fill="#f59e0b"/>
+  <circle cx="352" cy="385" r="42" fill="#1e293b"/>
+  <circle cx="352" cy="385" r="26" fill="#374151"/>
+  <circle cx="352" cy="385" r="12" fill="#f59e0b"/>
+  <!-- Headlights -->
+  <rect x="88" y="330" width="36" height="24" rx="6" fill="#fef3c7"/>
+  <!-- Route code text -->
+  <text x="183" y="252" font-family="Arial Black, sans-serif" font-weight="900" font-size="52" fill="#1e3a5f" text-anchor="middle">CDO</text>
+</svg>
