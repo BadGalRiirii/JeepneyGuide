@@ -189,7 +189,7 @@ export const routes = [
     origin: 'Bugo',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Bugo', 'Puerto', 'Agusan', 'Lapasan', 'Cogon'],
+    areas: ['Bugo', 'Puerto', 'Agusan', 'Lapasan', 'Xavier University', 'Limketkai', 'SM City', 'Cogon'],
     tip: 'Long route from eastern CDO passing through Puerto and Agusan.',
   },
 
@@ -204,7 +204,7 @@ export const routes = [
     origin: 'Bulua',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Bulua', 'Kauswagan', 'Cogon'],
+    areas: ['Bulua', 'Kauswagan', 'Consolacion', 'Cogon'],
     tip: 'B1 takes the main road through Kauswagan.',
   },
   {
@@ -217,7 +217,7 @@ export const routes = [
     origin: 'Bulua',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Bulua', 'Consolacion', 'Cogon'],
+    areas: ['Bulua', 'Kauswagan', 'Consolacion', 'Nazareth', 'Cogon'],
     tip: 'B2 passes through the Consolacion area.',
   },
   {
@@ -230,7 +230,7 @@ export const routes = [
     origin: 'Bulua',
     destination: 'Limketkai Drive',
     terminal: 'limketkai',
-    areas: ['Bulua', 'Limketkai', 'SM City'],
+    areas: ['Bulua', 'Kauswagan', 'Consolacion', 'Limketkai', 'Xavier University', 'SM City'],
     tip: 'B3 goes to Limketkai Mall area — great for shopping trips!',
   },
 
@@ -318,7 +318,7 @@ export const routes = [
     origin: 'Carmen',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Carmen', 'Nazareth', 'Poblacion', 'Cogon'],
+    areas: ['Carmen', 'Gaisano City', 'Nazareth', 'Poblacion', 'WBTPM', 'Cogon'],
     tip: 'R1 passes through the main Carmen-Cogon road.',
   },
   {
@@ -331,7 +331,7 @@ export const routes = [
     origin: 'Carmen',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Carmen', 'Poblacion', 'Cogon'],
+    areas: ['Carmen', 'Gaisano City', 'Poblacion', 'Agora', 'Cogon'],
     tip: 'R2 takes a slightly different path from Carmen.',
   },
 
@@ -505,7 +505,7 @@ export const routes = [
     origin: 'Lapasan',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Lapasan', 'Consolacion', 'Cogon'],
+    areas: ['Lapasan', 'Xavier University', 'Limketkai', 'SM City', 'Consolacion', 'Cogon'],
     tip: 'LA variant boards from the main Lapasan road.',
   },
   {
@@ -518,7 +518,7 @@ export const routes = [
     origin: 'Lapasan',
     destination: 'Cogon Public Market',
     terminal: 'cogon',
-    areas: ['Lapasan', 'Nazareth', 'Cogon'],
+    areas: ['Lapasan', 'Xavier University', 'Limketkai', 'Nazareth', 'Cogon'],
     tip: 'LB takes the inner Lapasan road.',
   },
 
@@ -763,7 +763,7 @@ export const routes = [
     origin: 'SM',
     destination: 'Limketkai Drive',
     terminal: 'limketkai',
-    areas: ['SM City', 'Limketkai', 'Lapasan', 'Cogon'],
+    areas: ['SM City', 'Xavier University', 'Limketkai', 'Lapasan', 'Consolacion', 'Cogon'],
     tip: 'RA route — goes to Limketkai Drive near SM City.',
   },
   {
@@ -776,7 +776,7 @@ export const routes = [
     origin: 'SM',
     destination: 'Limketkai Drive',
     terminal: 'limketkai',
-    areas: ['SM City', 'Limketkai', 'Cogon'],
+    areas: ['SM City', 'Xavier University', 'Limketkai', 'Nazareth', 'Cogon'],
     tip: 'RB route — alternate path to Limketkai Drive.',
   },
 

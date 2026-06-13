@@ -104,7 +104,7 @@ export default function GetMeThere({ onRouteSelect }) {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <p className="text-[10px] text-th-text3 uppercase tracking-widest font-bold">
-              {result.type === 'direct' ? 'Direct' : '1 Transfer'} · {result.options.length} option{result.options.length !== 1 ? 's' : ''}
+              {result.type === 'direct' ? 'Direct ride' : '2 rides · 1 transfer'} · {result.options.length} option{result.options.length !== 1 ? 's' : ''}
             </p>
             <button onClick={clear} className="text-[10px] text-th-text3 hover:text-th-text2 transition-colors">
               Clear
@@ -148,43 +148,87 @@ function ResultCard({ option, onSelect }) {
     )
   }
 
+  // Transfer card — step-by-step layout
   const t1 = TERMINALS[option.route1.terminal]
   const t2 = TERMINALS[option.route2.terminal]
   const c1 = option.route1.variantCode || option.route1.routeNumber
   const c2 = option.route2.variantCode || option.route2.routeNumber
 
   return (
-    <button
-      onClick={() => onSelect(option.route1)}
-      className="w-full text-left p-3 rounded-2xl bg-th-glass border border-th-border hover:bg-th-glassh active:scale-[0.98] transition-all"
-    >
-      <div className="flex items-center gap-2">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0 ${t1.bg} ${t1.text}`}>
-          {c1}
+    <div className="rounded-2xl border border-th-border overflow-hidden">
+
+      {/* Ride 1 */}
+      <button
+        onClick={() => onSelect(option.route1)}
+        className="w-full text-left p-3 bg-th-glass hover:bg-th-glassh active:scale-[0.99] transition-all"
+      >
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-[9px] font-black uppercase tracking-widest text-th-text3 bg-th-glassh px-2 py-0.5 rounded-full border border-th-bord2">
+            Ride 1
+          </span>
+          <div className="flex-1" />
+          <span className="text-amber-500 font-black text-sm">₱{option.fare1}</span>
         </div>
-        <div className="flex-1 min-w-0 text-center">
-          <div className="text-th-text3 text-[10px] uppercase tracking-widest">transfer at</div>
-          <div className="text-th-text text-xs font-semibold truncate">{option.transferStop}</div>
-        </div>
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0 ${t2.bg} ${t2.text}`}>
-          {c2}
-        </div>
-      </div>
-      <div className="flex items-end justify-between mt-2">
-        <div className="text-[11px] text-th-text2 leading-snug flex-1 min-w-0 pr-2 truncate">
-          {option.route1.name} → {option.route2.name}
-        </div>
-        <div className="flex-shrink-0 text-right">
-          <div className="text-amber-500 font-black text-base">₱{option.fare}</div>
-          <div className="text-th-text2 text-[11px] flex items-center gap-0.5 justify-end">
-            <Clock className="w-3 h-3" />{option.time} min
+        <div className="flex items-center gap-2.5">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 ${t1.bg} ${t1.text}`}>
+            {c1}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-th-text text-sm truncate">{option.route1.name}</div>
+            <div className="text-[11px] text-th-text2 mt-0.5 leading-snug">
+              Board at <span className="font-semibold text-th-text">{option.origin}</span>
+              <span className="text-th-text3 mx-1">→</span>
+              get off at <span className="font-semibold text-amber-500">{option.transferStop}</span>
+            </div>
           </div>
         </div>
+      </button>
+
+      {/* Transfer connector */}
+      <div className="flex items-center gap-2 px-4 py-1.5 border-y border-th-bord2 bg-amber-500/5">
+        <div className="w-px h-3 bg-amber-500/50 rounded-full" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">
+          Transfer at {option.transferStop}
+        </span>
       </div>
-      <div className="mt-1.5 flex items-center gap-1 text-[10px] text-th-text3">
-        <MapPin className="w-3 h-3 flex-shrink-0" />
-        Tap to view {option.route1.name} on map
+
+      {/* Ride 2 */}
+      <button
+        onClick={() => onSelect(option.route2)}
+        className="w-full text-left p-3 bg-th-glass hover:bg-th-glassh active:scale-[0.99] transition-all"
+      >
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-[9px] font-black uppercase tracking-widest text-th-text3 bg-th-glassh px-2 py-0.5 rounded-full border border-th-bord2">
+            Ride 2
+          </span>
+          <div className="flex-1" />
+          <span className="text-amber-500 font-black text-sm">₱{option.fare2}</span>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0 ${t2.bg} ${t2.text}`}>
+            {c2}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-th-text text-sm truncate">{option.route2.name}</div>
+            <div className="text-[11px] text-th-text2 mt-0.5 leading-snug">
+              Board at <span className="font-semibold text-amber-500">{option.transferStop}</span>
+              <span className="text-th-text3 mx-1">→</span>
+              get off at <span className="font-semibold text-th-text">{option.destination}</span>
+            </div>
+          </div>
+        </div>
+      </button>
+
+      {/* Total footer */}
+      <div className="flex items-center justify-between px-3 py-2 border-t border-th-bord2">
+        <div className="text-[11px] text-th-text3 flex items-center gap-1">
+          <Clock className="w-3 h-3" />
+          {option.time} min total
+        </div>
+        <div className="font-black text-th-text text-sm">
+          Total ₱{option.fare}
+        </div>
       </div>
-    </button>
+    </div>
   )
 }

@@ -54,6 +54,17 @@ const TERMINAL_NAMES = new Set([
   'Agora', 'Agora Market City & Terminal',
 ])
 
+// Partial distance: fraction of route actually ridden origin→transfer or transfer→dest
+function partialDistKm(route, fromStop, toStop) {
+  const { areas } = route
+  const i = areas.indexOf(fromStop)
+  const j = areas.indexOf(toStop)
+  if (i === -1 || j === -1) return getRouteDistanceKm(route.id)
+  const span = areas.length - 1
+  if (span === 0) return 0
+  return getRouteDistanceKm(route.id) * Math.abs(j - i) / span
+}
+
 // BFS: find direct or 1-transfer jeepney route between two stops
 export function findRoutes(origin, destination) {
   if (!origin || !destination || origin === destination) return null
@@ -66,7 +77,7 @@ export function findRoutes(origin, destination) {
     return {
       type: 'direct',
       options: direct.map(r => {
-        const km = getRouteDistanceKm(r.id)
+        const km = partialDistKm(r, origin, destination)
         return { type: 'direct', route: r, distanceKm: km, fare: calcFare(km), time: calcTime(km) }
       }),
     }
@@ -84,21 +95,27 @@ export function findRoutes(origin, destination) {
       if (r1.id === r2.id) continue
       const common = r1.areas.filter(a => r2.areas.includes(a))
       if (common.length === 0) continue
-      // Prefer a terminal as the transfer point — it's safer and has more jeepneys
+      // Prefer a terminal as the transfer point — safer, more frequent
       const transferStop = common.find(a => TERMINAL_NAMES.has(a)) ?? common[0]
       const key = `${r1.id}|${transferStop}|${r2.id}`
       if (seen.has(key)) continue
       seen.add(key)
-      const km1 = getRouteDistanceKm(r1.id)
-      const km2 = getRouteDistanceKm(r2.id)
+      const km1 = partialDistKm(r1, origin, transferStop)
+      const km2 = partialDistKm(r2, transferStop, destination)
+      const fare1 = calcFare(km1)
+      const fare2 = calcFare(km2)
       transfers.push({
         type: 'transfer',
         route1: r1,
         transferStop,
         route2: r2,
+        origin,
+        destination,
         distanceKm: km1 + km2,
-        fare: calcFare(km1) + calcFare(km2),
-        time: calcTime(km1) + calcTime(km2) + 5, // +5 min wait for transfer
+        fare1,
+        fare2,
+        fare: fare1 + fare2,
+        time: calcTime(km1) + calcTime(km2) + 5, // +5 min wait at transfer
       })
     }
   }
