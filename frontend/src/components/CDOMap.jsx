@@ -156,6 +156,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
   const handleMapClick = useCallback(e => {
     const map = mapRef.current?.getMap()
     if (!map) return
+    if (!map.getLayer('route-stops')) { setStopPopup(null); return }
     const features = map.queryRenderedFeatures(e.point, { layers: ['route-stops'] })
     if (features.length > 0) {
       const name = features[0].properties?.name
