@@ -207,9 +207,6 @@ export default function CDOMap({ selectedRoute, userLocation }) {
             ? ['interpolate', ['linear'], ['zoom'], 13, 0, 14, selectedRoute ? 0.88 : 0.70, 18, selectedRoute ? 0.96 : 0.92]
             : ['interpolate', ['linear'], ['zoom'], 13, 0, 14, selectedRoute ? 0.55 : 0.38, 18, selectedRoute ? 0.72 : 0.58],
           'fill-extrusion-vertical-gradient': true,
-          'fill-extrusion-ambient-occlusion-intensity': 0.5,
-          'fill-extrusion-ambient-occlusion-radius': 3,
-          'fill-extrusion-edge-radius': 0.15,
         }}
       />
 
