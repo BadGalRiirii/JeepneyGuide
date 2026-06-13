@@ -13,6 +13,15 @@ const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY
 // Keep the camera inside CDO — [west, south, east, north]
 const CDO_BOUNDS = [124.56, 8.38, 124.75, 8.58]
 
+// Key CDO landmarks commuters navigate to (tappable pins)
+const LANDMARKS = [
+  { id: 'xu',       name: 'Xavier University',       lat: 8.4920, lng: 124.6530, icon: '🏫' },
+  { id: 'sm',       name: 'SM City CDO',              lat: 8.4940, lng: 124.6570, icon: '🛍️' },
+  { id: 'cityh',    name: 'CDO City Hall',            lat: 8.4796, lng: 124.6490, icon: '🏛️' },
+  { id: 'divisoria',name: 'Divisoria',                lat: 8.4768, lng: 124.6462, icon: '🏪' },
+  { id: 'hdon',     name: 'Northern Mindanao Medical Center', lat: 8.4748, lng: 124.6441, icon: '🏥' },
+]
+
 const TERMINAL_COLORS = {
   cogon:     '#3b82f6',
   carmen:    '#10b981',
@@ -77,11 +86,12 @@ export default function CDOMap({ selectedRoute, userLocation }) {
   const { isDark } = useTheme()
 
   const MAP_STYLE = isDark
-    ? `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${MAPTILER_KEY}`
-    : `https://api.maptiler.com/maps/dataviz-light/style.json?key=${MAPTILER_KEY}`
+    ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_KEY}`
+    : `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_KEY}`
 
-  const [terminalPopup, setTerminalPopup] = useState(null)
-  const [stopPopup,     setStopPopup]     = useState(null)
+  const [terminalPopup,  setTerminalPopup]  = useState(null)
+  const [stopPopup,      setStopPopup]      = useState(null)
+  const [landmarkPopup,  setLandmarkPopup]  = useState(null)
   const [isMobile,      setIsMobile]      = useState(() => window.innerWidth < 768)
 
   useEffect(() => {
@@ -166,6 +176,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
       }
     } else {
       setStopPopup(null)
+      setLandmarkPopup(null)
     }
   }, [])
 
@@ -250,6 +261,29 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           </Marker>
         )
       })}
+
+      {/* ── CDO Landmark pins ── */}
+      {LANDMARKS.map(lm => (
+        <Marker key={lm.id} latitude={lm.lat} longitude={lm.lng} anchor="center">
+          <div
+            title={lm.name}
+            onClick={() => { setLandmarkPopup(lm); setTerminalPopup(null); setStopPopup(null) }}
+            style={{
+              width: 28, height: 28,
+              borderRadius: 7,
+              background: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.85)',
+              border: `1.5px solid ${isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.15)'}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 14, cursor: 'pointer',
+              boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.5)' : '0 2px 8px rgba(0,0,0,0.15)',
+              backdropFilter: 'blur(6px)',
+              transition: 'transform 0.15s',
+            }}
+          >
+            {lm.icon}
+          </div>
+        </Marker>
+      ))}
 
       {/* ── User location — pulsing blue dot ── */}
       {userLocation && (
@@ -390,6 +424,18 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           anchor="bottom" onClose={() => setTerminalPopup(null)} closeButton={false}
         >
           <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--c-text1)' }}>{terminalPopup.text}</span>
+        </Popup>
+      )}
+
+      {/* ── Landmark popup ── */}
+      {landmarkPopup && (
+        <Popup
+          longitude={landmarkPopup.lng} latitude={landmarkPopup.lat}
+          anchor="bottom" onClose={() => setLandmarkPopup(null)} closeButton={false}
+        >
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--c-text1)' }}>
+            {landmarkPopup.icon} {landmarkPopup.name}
+          </span>
         </Popup>
       )}
 
