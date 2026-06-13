@@ -5,10 +5,10 @@ import { COORDS, TERMINAL_COORDS } from '../data/coordinates'
 import { TERMINALS } from '../data/routes'
 import { ROUTE_PATHS } from '../data/routePaths'
 import { routesAtStop } from '../utils/routing'
+import { useTheme } from '../contexts/ThemeContext'
 
-const CDO_CENTER  = { longitude: 124.6472, latitude: 8.4822 }
+const CDO_CENTER   = { longitude: 124.6472, latitude: 8.4822 }
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY
-const MAP_STYLE    = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${MAPTILER_KEY}`
 
 // Keep the camera inside CDO — [west, south, east, north]
 const CDO_BOUNDS = [124.56, 8.38, 124.75, 8.58]
@@ -22,8 +22,8 @@ const TERMINAL_COLORS = {
   agora:     '#06b6d4',
 }
 
-// Building extrusion tints per terminal — applied when that terminal's route is active
-const BUILDING_TINTS = {
+// Dark-mode building tints
+const BUILDING_TINTS_DARK = {
   cogon:     { a: '#0a1c3d', b: '#0d2450', c: '#112e62' },
   carmen:    { a: '#091e2c', b: '#0b2838', c: '#0d3045' },
   limketkai: { a: '#10143a', b: '#15194d', c: '#1b2060' },
@@ -31,7 +31,18 @@ const BUILDING_TINTS = {
   wbtpm:     { a: '#1a0c0c', b: '#221010', c: '#2a1414' },
   agora:     { a: '#091e2c', b: '#0b2838', c: '#0d3345' },
 }
-const BUILDING_DEFAULT = { a: '#0a1a30', b: '#112240', c: '#1a3060' }
+const BUILDING_DEFAULT_DARK = { a: '#0a1a30', b: '#112240', c: '#1a3060' }
+
+// Light-mode building tints (pale pastels of each terminal colour)
+const BUILDING_TINTS_LIGHT = {
+  cogon:     { a: '#dbeafe', b: '#bfdbfe', c: '#93c5fd' },
+  carmen:    { a: '#d1fae5', b: '#a7f3d0', c: '#6ee7b7' },
+  limketkai: { a: '#ede9fe', b: '#ddd6fe', c: '#c4b5fd' },
+  gaisano:   { a: '#fef3c7', b: '#fde68a', c: '#fcd34d' },
+  wbtpm:     { a: '#fee2e2', b: '#fecaca', c: '#fca5a5' },
+  agora:     { a: '#cffafe', b: '#a5f3fc', c: '#67e8f9' },
+}
+const BUILDING_DEFAULT_LIGHT = { a: '#e2e8f0', b: '#cbd5e1', c: '#b8c5d6' }
 
 function buildRouteGeoJSON(route) {
   const stops = route.areas
@@ -63,6 +74,11 @@ function buildRouteGeoJSON(route) {
 
 export default function CDOMap({ selectedRoute, userLocation }) {
   const mapRef = useRef(null)
+  const { isDark } = useTheme()
+
+  const MAP_STYLE = isDark
+    ? `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${MAPTILER_KEY}`
+    : `https://api.maptiler.com/maps/dataviz-light/style.json?key=${MAPTILER_KEY}`
 
   const [terminalPopup, setTerminalPopup] = useState(null)
   const [stopPopup,     setStopPopup]     = useState(null)
@@ -80,7 +96,9 @@ export default function CDOMap({ selectedRoute, userLocation }) {
     [selectedRoute]
   )
 
-  const bTint = selectedRoute ? (BUILDING_TINTS[selectedRoute.terminal] || BUILDING_DEFAULT) : BUILDING_DEFAULT
+  const bTint = isDark
+    ? (selectedRoute ? (BUILDING_TINTS_DARK[selectedRoute.terminal] || BUILDING_DEFAULT_DARK) : BUILDING_DEFAULT_DARK)
+    : (selectedRoute ? (BUILDING_TINTS_LIGHT[selectedRoute.terminal] || BUILDING_DEFAULT_LIGHT) : BUILDING_DEFAULT_LIGHT)
 
   // Fly to route bounds on selection
   useEffect(() => {
@@ -108,7 +126,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
         const lngs = pts.map(c => c[1])
         const lats = pts.map(c => c[0])
         const padding = isMobile
-          ? { top: 90, bottom: 260, left: 40, right: 40 }
+          ? { top: 90, bottom: 320, left: 40, right: 40 }
           : { top: 90, bottom: 90, left: 60, right: 60 }
         const camera = map.cameraForBounds(
           [[Math.min(...lngs) - 0.003, Math.min(...lats) - 0.003],
@@ -185,12 +203,9 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           ],
           'fill-extrusion-height': ['coalesce', ['get', 'render_height'], ['get', 'height'], 10],
           'fill-extrusion-base':   ['coalesce', ['get', 'render_min_height'], ['get', 'min_height'], 0],
-          'fill-extrusion-opacity': [
-            'interpolate', ['linear'], ['zoom'],
-            13, 0,
-            14, selectedRoute ? 0.88 : 0.70,
-            18, selectedRoute ? 0.96 : 0.92,
-          ],
+          'fill-extrusion-opacity': isDark
+            ? ['interpolate', ['linear'], ['zoom'], 13, 0, 14, selectedRoute ? 0.88 : 0.70, 18, selectedRoute ? 0.96 : 0.92]
+            : ['interpolate', ['linear'], ['zoom'], 13, 0, 14, selectedRoute ? 0.55 : 0.38, 18, selectedRoute ? 0.72 : 0.58],
           'fill-extrusion-vertical-gradient': true,
           'fill-extrusion-ambient-occlusion-intensity': 0.5,
           'fill-extrusion-ambient-occlusion-radius': 3,
@@ -376,7 +391,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           longitude={terminalPopup.lng} latitude={terminalPopup.lat}
           anchor="bottom" onClose={() => setTerminalPopup(null)} closeButton={false}
         >
-          <span style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>{terminalPopup.text}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--c-text1)' }}>{terminalPopup.text}</span>
         </Popup>
       )}
 
@@ -388,10 +403,10 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           maxWidth="220px"
         >
           <div style={{ padding: '2px 0' }}>
-            <div style={{ fontWeight: 800, fontSize: 13, color: '#fff', marginBottom: 6 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: 'var(--c-text1)', marginBottom: 6 }}>
               📍 {stopPopup.stopName}
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>
+            <div style={{ fontSize: 11, color: 'var(--c-text2)', marginBottom: 4 }}>
               {stopPopup.routes.length} route{stopPopup.routes.length !== 1 ? 's' : ''} here
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
@@ -402,7 +417,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
                   <span key={r.id} style={{
                     fontSize: 11, fontWeight: 700,
                     padding: '2px 7px', borderRadius: 999,
-                    background: `${TERMINAL_COLORS[r.terminal]}30`,
+                    background: `${TERMINAL_COLORS[r.terminal]}25`,
                     color: t.color,
                     border: `1px solid ${TERMINAL_COLORS[r.terminal]}50`,
                   }}>

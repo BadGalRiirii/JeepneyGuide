@@ -2,45 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens ───────────────────────────────────── */
+:root {
+  /* Light (default) */
+  --c-bg:      #f0f4f8;
+  --c-surface: #ffffff;
+  --c-surf2:   #f0f4f8;
+  --c-sheet:   rgba(255, 255, 255, 0.97);
+  --c-search:  rgba(255, 255, 255, 0.93);
+  --c-border:  rgba(15, 23, 42, 0.10);
+  --c-bord2:   rgba(15, 23, 42, 0.06);
+  --c-text1:   #0f172a;
+  --c-text2:   #475569;
+  --c-text3:   #94a3b8;
+  --c-glass:   rgba(0, 0, 0, 0.04);
+  --c-glassh:  rgba(0, 0, 0, 0.07);
+}
+
+.dark {
+  --c-bg:      #060d1a;
+  --c-surface: #060d1a;
+  --c-surf2:   #0a1628;
+  --c-sheet:   rgba(6, 13, 26, 0.96);
+  --c-search:  rgba(6, 13, 26, 0.92);
+  --c-border:  rgba(255, 255, 255, 0.10);
+  --c-bord2:   rgba(255, 255, 255, 0.05);
+  --c-text1:   #e2eaf5;
+  --c-text2:   rgba(226, 234, 245, 0.55);
+  --c-text3:   rgba(226, 234, 245, 0.28);
+  --c-glass:   rgba(255, 255, 255, 0.05);
+  --c-glassh:  rgba(255, 255, 255, 0.08);
+}
+
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   html, body, #root {
     height: 100%;
     overflow: hidden;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    background-color: #060d1a;
-    color: #e2eaf5;
+    background-color: var(--c-bg);
+    color: var(--c-text1);
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #0a1628;
-  }
-
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--c-surf2); }
   ::-webkit-scrollbar-thumb {
-    background: #1e3a5f;
+    background: var(--c-border);
     border-radius: 3px;
   }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #2d5080;
-  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--c-text3); }
 }
 
 @keyframes location-pulse {
@@ -50,7 +68,7 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl;
+    @apply bg-th-glass backdrop-blur-sm border border-th-border rounded-2xl;
   }
 
   .btn-primary {
@@ -58,11 +76,11 @@
   }
 
   .btn-ghost {
-    @apply bg-white/5 hover:bg-white/10 text-white/80 font-medium px-5 py-2.5 rounded-xl transition-all duration-200 border border-white/10;
+    @apply bg-th-glass hover:bg-th-glassh text-th-text2 font-medium px-5 py-2.5 rounded-xl transition-all duration-200 border border-th-border;
   }
 
   .input-field {
-    @apply bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-all duration-200 w-full;
+    @apply bg-th-glass border border-th-border rounded-xl px-4 py-3 text-th-text placeholder-th-text3 focus:outline-none focus:border-amber-500/50 transition-all duration-200 w-full;
   }
 
   .terminal-badge {
