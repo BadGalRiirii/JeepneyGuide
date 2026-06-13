@@ -23,17 +23,17 @@ function nearestStopDist(route, userLoc) {
 }
 
 const FILTERS = [
-  { id: 'all',       label: 'All',       active: 'bg-white/15 text-white border-white/25' },
-  { id: 'cogon',     label: 'Cogon',     active: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
-  { id: 'carmen',    label: 'Carmen',    active: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
-  { id: 'limketkai', label: 'Limketkai', active: 'bg-violet-500/20 text-violet-300 border-violet-500/40' },
-  { id: 'gaisano',   label: 'Gaisano',   active: 'bg-amber-500/20 text-amber-300 border-amber-500/40' },
-  { id: 'wbtpm',     label: 'WBTPM',     active: 'bg-red-500/20 text-red-300 border-red-500/40' },
-  { id: 'agora',     label: 'Agora',     active: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' },
+  { id: 'all',       label: 'All',       active: 'bg-white/15 text-white border-white/25',             color: null       },
+  { id: 'cogon',     label: 'Cogon',     active: 'bg-blue-500/20 text-blue-300 border-blue-500/40',    color: '#3b82f6'  },
+  { id: 'carmen',    label: 'Carmen',    active: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40', color: '#10b981' },
+  { id: 'limketkai', label: 'Limketkai', active: 'bg-violet-500/20 text-violet-300 border-violet-500/40',   color: '#8b5cf6' },
+  { id: 'gaisano',   label: 'Gaisano',   active: 'bg-amber-500/20 text-amber-300 border-amber-500/40',  color: '#f59e0b'  },
+  { id: 'wbtpm',     label: 'WBTPM',     active: 'bg-red-500/20 text-red-300 border-red-500/40',        color: '#ef4444'  },
+  { id: 'agora',     label: 'Agora',     active: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',     color: '#06b6d4'  },
 ]
 
 const PEEK_DEFAULT  = 220
-const PEEK_SELECTED = 200
+const PEEK_SELECTED = 290
 
 export default function Home() {
   const [tab,          setTab]          = useState('browse')     // 'browse' | 'get'
@@ -230,12 +230,15 @@ export default function Home() {
                     <button
                       key={f.id}
                       onClick={() => setFilter(f.id)}
-                      className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                      className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                         filter === f.id ? f.active : 'bg-white/5 text-white/40 border-white/10 hover:border-white/20 hover:text-white/60'
                       }`}
                     >
+                      {f.color && (
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: f.color }} />
+                      )}
                       {f.label}
-                      {f.id === 'all' && <span className="ml-1 opacity-50">{count}</span>}
+                      {f.id === 'all' && <span className="opacity-50">{count}</span>}
                     </button>
                   )
                 })}
@@ -270,7 +273,11 @@ export default function Home() {
               {/* Route list */}
               <div className="flex-1 overflow-y-auto px-2 py-2">
                 {filtered.length === 0 ? (
-                  <p className="text-center text-white/30 text-sm py-10">No routes for "{query}"</p>
+                  <div className="text-center py-10 px-4">
+                    <div className="text-2xl mb-2">🔍</div>
+                    <p className="text-white/50 text-sm font-medium">No routes for "{query}"</p>
+                    <p className="text-white/25 text-xs mt-1.5 leading-relaxed">Try a barangay name or terminal like "Cogon"</p>
+                  </div>
                 ) : (
                   <div className="space-y-0.5">
                     {filtered.map(route => (
@@ -362,7 +369,7 @@ export default function Home() {
               }`}
             >
               <Navigation className={`w-3.5 h-3.5 ${locating ? 'animate-spin' : ''}`} />
-              <span className="hidden xs:inline">{locating ? '…' : 'Near Me'}</span>
+              <span>{locating ? '…' : 'Near Me'}</span>
             </button>
 
             {query && (
@@ -404,10 +411,13 @@ export default function Home() {
                   <button
                     key={f.id}
                     onClick={() => { setFilter(f.id); setTab('browse'); setExpanded(true) }}
-                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
+                    className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all ${
                       filter === f.id ? f.active : 'bg-white/5 text-white/50 border-white/10 active:bg-white/10'
                     }`}
                   >
+                    {f.color && (
+                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: f.color }} />
+                    )}
                     {f.label}
                   </button>
                 ))}
@@ -417,38 +427,50 @@ export default function Home() {
 
           {/* Peeked & route selected: route detail card */}
           {!expanded && selected && terminal && (
-            <div className="px-4 pb-1 flex-shrink-0">
-              <div className="flex items-start gap-3">
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 ${terminal.bg} ${terminal.text}`}>
+            <div className="px-4 pb-2 flex-shrink-0">
+              {/* Route badge + name + fare */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center font-black text-xl flex-shrink-0 ${terminal.bg} ${terminal.text} shadow-lg`}>
                   {selected.variantCode || selected.routeNumber}
                 </div>
-                <div className="flex-1 min-w-0 pt-0.5">
-                  <div className="font-bold text-white text-base leading-snug">{selected.name}</div>
-                  <div className={`text-xs font-semibold mt-0.5 ${terminal.text}`}>→ {terminal.name}</div>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-amber-400 font-black text-base">₱{routeFare}</span>
-                    <span className="text-white/40 text-xs">~{routeTime} min</span>
-                    <span className="text-white/25 text-[11px]">{routeKm.toFixed(1)} km</span>
-                  </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-bold text-white text-[15px] leading-tight truncate">{selected.name}</div>
+                  <div className={`text-xs font-semibold mt-1 ${terminal.text} opacity-80`}>via {terminal.name}</div>
+                </div>
+                <div className="flex-shrink-0 text-right">
+                  <div className="text-amber-400 font-black text-2xl leading-none">₱{routeFare}</div>
+                  <div className="text-white/35 text-[11px] mt-1">~{routeTime} min</div>
                 </div>
               </div>
-              {selected.tip && (
-                <div className="text-[11px] text-amber-300/70 mt-2 leading-snug line-clamp-2">
-                  💡 {selected.tip}
+
+              {/* Board at */}
+              <div className="bg-white/5 rounded-xl px-3 py-2.5 mb-2.5 flex items-center gap-2.5">
+                <MapPin className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] text-white/30 font-bold uppercase tracking-widest">Board at</div>
+                  <div className="text-white/90 text-sm font-bold truncate mt-0.5">{selected.areas[0]}</div>
                 </div>
-              )}
-              <div className="mt-2.5 flex flex-wrap gap-1.5">
-                {selected.areas.map(area => (
-                  <span key={area} className="text-[11px] px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-white/50">
+              </div>
+
+              {/* Stops preview — scrollable row */}
+              <div className="flex gap-1.5 overflow-x-auto pb-1 mb-2" style={{ scrollbarWidth: 'none' }}>
+                {selected.areas.slice(0, 6).map(area => (
+                  <span key={area} className="flex-shrink-0 text-[11px] px-2.5 py-1 rounded-full bg-white/5 border border-white/8 text-white/40 whitespace-nowrap">
                     {area}
                   </span>
                 ))}
+                {selected.areas.length > 6 && (
+                  <span className="flex-shrink-0 text-[11px] px-2.5 py-1 rounded-full bg-white/5 border border-white/8 text-white/25 whitespace-nowrap">
+                    +{selected.areas.length - 6} more
+                  </span>
+                )}
               </div>
+
               <button
                 onClick={() => setExpanded(true)}
-                className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-white/30 active:text-white/50"
+                className="w-full flex items-center justify-center gap-1.5 text-xs text-white/30 active:text-white/50 py-0.5"
               >
-                <ChevronUp className="w-3.5 h-3.5" /> Show all routes
+                <ChevronUp className="w-3.5 h-3.5" /> Browse all routes
               </button>
             </div>
           )}
@@ -466,10 +488,13 @@ export default function Home() {
                         <button
                           key={f.id}
                           onClick={() => setFilter(f.id)}
-                          className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                          className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                             filter === f.id ? f.active : 'bg-white/5 text-white/40 border-white/10 active:bg-white/10'
                           }`}
                         >
+                          {f.color && (
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: f.color }} />
+                          )}
                           {f.label}
                         </button>
                       ))}
@@ -485,7 +510,13 @@ export default function Home() {
               {tab === 'browse' && (
                 <div className="flex-1 overflow-y-auto px-2 pb-10">
                   {filtered.length === 0 ? (
-                    <p className="text-center text-white/30 text-sm py-10">No routes found</p>
+                    <div className="text-center py-10 px-4">
+                      <div className="text-3xl mb-3">🔍</div>
+                      <p className="text-white/50 text-sm font-medium">No routes found</p>
+                      <p className="text-white/25 text-xs mt-2 leading-relaxed">
+                        Try a place name or terminal<br />"Cogon", "Carmen", "Limketkai"
+                      </p>
+                    </div>
                   ) : (
                     <div className="space-y-0.5">
                       {filtered.map(route => (

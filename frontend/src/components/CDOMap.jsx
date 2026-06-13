@@ -66,6 +66,13 @@ export default function CDOMap({ selectedRoute, userLocation }) {
 
   const [terminalPopup, setTerminalPopup] = useState(null)
   const [stopPopup,     setStopPopup]     = useState(null)
+  const [isMobile,      setIsMobile]      = useState(() => window.innerWidth < 768)
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
 
   const terminalColor = selectedRoute ? (TERMINAL_COLORS[selectedRoute.terminal] ?? '#f59e0b') : null
   const routeGeoJSON  = useMemo(
@@ -160,7 +167,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
       onClick={handleMapClick}
       cursor="auto"
     >
-      <NavigationControl position="top-right" />
+      {!isMobile && <NavigationControl position="top-right" />}
 
       {/* ── 3D buildings — tinted toward the active terminal's color ── */}
       <Layer
