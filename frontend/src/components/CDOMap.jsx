@@ -6,8 +6,12 @@ import { TERMINALS } from '../data/routes'
 import { ROUTE_PATHS } from '../data/routePaths'
 import { routesAtStop } from '../utils/routing'
 
-const CDO_CENTER = { longitude: 124.6472, latitude: 8.4822 }
-const MAP_STYLE  = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+const CDO_CENTER  = { longitude: 124.6472, latitude: 8.4822 }
+const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_KEY
+const MAP_STYLE    = `https://api.maptiler.com/maps/dataviz-dark/style.json?key=${MAPTILER_KEY}`
+
+// Keep the camera inside CDO — [west, south, east, north]
+const CDO_BOUNDS = [124.56, 8.38, 124.75, 8.58]
 
 const TERMINAL_COLORS = {
   cogon:     '#3b82f6',
@@ -84,7 +88,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
           return
         }
         if (!selectedRoute) {
-          map.flyTo({ center: [CDO_CENTER.longitude, CDO_CENTER.latitude], zoom: 12, pitch: 45, duration: 1000 })
+          map.flyTo({ center: [CDO_CENTER.longitude, CDO_CENTER.latitude], zoom: 13, pitch: 45, duration: 1000 })
           return
         }
         let pts
@@ -146,9 +150,12 @@ export default function CDOMap({ selectedRoute, userLocation }) {
   return (
     <Map
       ref={mapRef}
-      initialViewState={{ ...CDO_CENTER, zoom: 12, pitch: 45, bearing: 0 }}
+      initialViewState={{ ...CDO_CENTER, zoom: 13, pitch: 45, bearing: 0 }}
       style={{ width: '100%', height: '100%' }}
       mapStyle={MAP_STYLE}
+      maxBounds={CDO_BOUNDS}
+      minZoom={11}
+      maxZoom={18}
       attributionControl={false}
       onClick={handleMapClick}
       cursor="auto"
@@ -159,7 +166,7 @@ export default function CDOMap({ selectedRoute, userLocation }) {
       <Layer
         id="3d-buildings"
         type="fill-extrusion"
-        source="carto"
+        source="maptiler_planet"
         source-layer="building"
         minzoom={13}
         paint={{
